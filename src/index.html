@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+          "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>OCaml toplevel</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="basic.css" type="text/css" />
+  </head>
+  <body>
+    <div id="toplevel-container">
+      <pre id="output"></pre>
+      <div>
+        <div id="sharp" class="sharp"></div>
+        <textarea id="userinput">Loading ...</textarea>
+      </div>
+    </div>
+    <div id="toplevel-side">
+      <div id="editor"></div>
+      In the editor: <code>Ctrl-Space</code> selects code and
+      <code>Ctrl-Enter</code> executes it.
+      In the terminal: <code>Shift-Enter</code> gives a newline,
+      <code>Ctrl-l</code> clears the display, and
+      <code>Ctrl-k</code> resets the toplevel.
+      Press <code>Ctrl-t</code> to switch between the terminal and editor.
+    </div>
+
+    <!-- ace editor -->
+    <script type="text/javascript" charset="utf-8"
+            src="ace-builds-1.4.1/src-min/ace.js"></script>
+    <script type="text/javascript" charset="utf-8" src="ace_bindings.js"></script>
+
+    <!-- for graphviz window -->
+    <script type="text/javascript" src="viz.js"></script>
+    <script type="text/javascript" src="full.render.js"></script>
+    <script type="text/javascript" src="svg-pan-zoom.min.js"></script>
+
+    <!-- toplevel -->
+    <script type="text/javascript" charset="utf-8" src="exported-unit.cmis.js"></script>
+    <script type="text/javascript" charset="utf-8" src="stdlib.cmis.js"></script>
+    <script type="text/javascript" charset="utf-8" src="lwt.cmis.js"></script>
+    <script type="text/javascript" charset="utf-8" src="js_of_ocaml.cmis.js"></script>
+
+    <script type="text/javascript" charset="utf-8" src="toplevel.js"></script>
+  </body>
+</html>
