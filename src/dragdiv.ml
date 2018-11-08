@@ -6,7 +6,12 @@ type resize_type =
   | SizeOnly
   | SizeAndPos
 
+let get_id =
+  let counter = ref 0 in
+  function () -> incr counter; !counter
+
 type t = {
+  id  : int;
   div : Dom_html.element Js.t;
   min_width  : int;
   min_height : int;
@@ -20,17 +25,64 @@ type t = {
 let js = Js.string
 let js_pix x = js (string_of_int x ^ "px")
 
-let close { div } =
-  div##.outerHTML := js ""
-
-let do_close this ev =
-  close this;
-  Js._false
-
 let drag_done ev =
   let doc = Dom_html.window##.document in
   doc##.onmouseup := Dom.no_handler;
   doc##.onmousemove := Dom.no_handler;
+  Js._false
+
+(* Window tracking *)
+
+let locinc = 20
+
+let locmin = 50
+let locmax = 200
+
+let lastloc = ref (locmin, locmin)
+
+let nwindows = ref 0
+let windows = ref ([] : t list)
+
+let update_zindex () =
+  let max = !nwindows + 50 in
+  List.iteri
+    (fun i w -> w.div##.style##.zIndex := js (string_of_int (max - i)))
+    !windows
+
+let new_window pos w =
+  let x, y =
+    match pos with
+    | None ->
+        let x, y = !lastloc in
+        if x > locmax || y > locmax
+        then (lastloc := (locmin, locmin); locmin, locmin)
+        else (lastloc := (x + locinc, y + locinc); x, y)
+    | Some p -> p
+  in
+  incr nwindows;
+  windows := w :: !windows;
+  w.div##.style##.left := js_pix x;
+  w.div##.style##.top  := js_pix y
+
+let drop_window { id = wid } =
+  decr nwindows;
+  windows := List.filter (fun { id } -> wid <> id) !windows
+
+let raise_window { id = wid } =
+  let w, w' = List.partition (fun { id } -> wid = id) !windows in
+  windows := w @ w';
+  update_zindex ()
+
+let win_raise w ev = raise_window w; Js._false
+
+(* Window close methods *)
+
+let close { div } =
+  div##.outerHTML := js ""
+
+let do_close this ev =
+  drop_window this;
+  close this;
   Js._false
 
 (* Window move methods *)
@@ -45,6 +97,7 @@ let move_drag ({div} as this) ev =
 
 let move_mousedown ({ div } as this) ev =
   let doc = Dom_html.window##.document in
+  raise_window this;
   this.preX <- ev##.clientX;
   this.preY <- ev##.clientY;
   doc##.onmouseup := Dom.handler drag_done;
@@ -87,6 +140,7 @@ let resize_drag ({div} as this) ev =
 
 let resize_mousedown resize_width resize_height ({ div } as this) ev =
   let doc = Dom_html.window##.document in
+  raise_window this;
   (match resize_width with
    | Fixed      -> ()
    | SizeOnly   -> this.preX <- div##.clientWidth - ev##.clientX;
@@ -109,7 +163,7 @@ let create ?(min_width=50)
            ?(min_height=50)
            ?(width=js "200px")
            ?(height=js "100px")
-           ?(pos=(0, 0))
+           ?pos
            ?title
            ?(on_resize=fun () -> ())
            content =
@@ -120,6 +174,7 @@ let create ?(min_width=50)
   let close = createDiv doc in
 
   let this = {
+    id  = get_id ();
     div = win;
     on_resize  = on_resize;
     min_width  = min_width;
@@ -138,17 +193,16 @@ let create ?(min_width=50)
 
   (* Window style *)
   win##.style##.position := js "absolute";
-  win##.style##.zIndex   := js "9";
   win##.style##.width    := width;
   win##.style##.height   := height;
-  win##.style##.left     := js_pix (fst pos);
-  win##.style##.top      := js_pix (snd pos);
+  win##.onmousedown      := Dom.handler (win_raise this);
   Dom.appendChild win name;
   Dom.appendChild win content;
+  new_window pos this;
 
   (* Title style *)
   name##.style##.cursor := js "move";
-  name##.style##.zIndex := js "10";
+  name##.style##.zIndex := js "auto";
   name##.textContent    := Js.Opt.option title;
   name##.onmousedown    := Dom.handler (move_mousedown this);
 
