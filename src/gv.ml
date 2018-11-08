@@ -54,7 +54,7 @@ let mapo f vo =
   | None -> None
   | Some v -> Some (f v)
 
-let gv ?engine s =
+let gv ?(title="Graphviz") ?engine s =
   let viz = new%js Graphviz.viz in
   let options = Graphviz.options ?engine:(mapo js engine) () in
   let p_svg = viz##renderSVGElement_withOptions (js s) options in
@@ -67,13 +67,26 @@ let gv ?engine s =
                 ^ Js.(Opt.(case (svg##getAttribute (js "style"))
                                 (fun () -> "") (fun s -> to_string s))) in
               svg##setAttribute (js "style") (js svg_style);
+
+              (* Calculate size *)
+              let sw, sh = svg##.width##.animVal##.value,
+                           svg##.height##.animVal##.value in
+              let ww, wh = 400., 400. in
+              let r1, r2 = sw /. ww, sh /. wh in
+              let w, h =
+                if r1 < 1. && r2 < 1. then sw, sh
+                else if r1 > r2 then sw /. r1, sh /. r1
+                else  sw /. r2, sh /. r2
+              in
+              let w, h = int_of_float w, int_of_float h in
+
+              (* Make window *)
               let win = Dragdiv.create
                           ~min_width:100
                           ~min_height:100
-                          ~width:(js "200px")
-                          ~height:(js "250px")
-                          ~pos:(10, 10)
-                          ~title:(js "Graphviz")
+                          ~width:(js (string_of_int w ^ "px"))
+                          ~height:(js (string_of_int h ^ "px"))
+                          ~title:(js title)
                           c
               in
               let pan = Svgpanzoom.create_withsvg
