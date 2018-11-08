@@ -1,8 +1,28 @@
 
 body,html {
   height: 100%;
-  background-color:#eee;
   margin: 0px;
+}
+
+div.text {
+  width: 40em;
+  text-align: justify;
+  background-color: white;
+  margin: 0 auto;
+}
+
+div.text table {
+  background-color:#f5f5f5;
+  border-spacing: 2px;
+  margin: 0 auto;
+}
+
+div.text td {
+  padding-left:.5em;
+  padding-right:3em;
+  vertical-align:top;
+  background-color: white;
+  border-width:0;
 }
 
 /* * * * toplevel */
@@ -12,23 +32,48 @@ code, kbd, pre, samp {
 }
 
 #toplevel-container {
+  position:fixed;
+  top: 0;
+  left: 0;
   width: 50%;
-  background-color: black;
-  color: #ccc;
+  background-color: #ccc;
+  color: black;
   overflow: auto;
   overflow-x: hidden;
   height: 100%;
   float:left;
-  padding: 0px;
 }
 margin
 #toplevel-container pre#output {
   padding: 0px;
 }
 
+.container-inner {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 0;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-flow: column;
+}
+
+#toplevel-active {
+  flex: 0;
+}
+
+#toplevel-inactive {
+  flex: 1;
+}
+
 #toplevel-container #output {
   background-color:transparent;
-  color: #ccc;
+  color: black;
   border: none;
   line-height:18px;
   font-size: 12px;
@@ -41,7 +86,7 @@ margin
   line-height:18px;
   font-size: 12px;
   background-color: transparent;
-  color: #fff;
+  color: blue;
   border: 0;
   resize: none;
   outline: none;
@@ -72,13 +117,13 @@ margin
 }
 
 #toplevel-side {
-  position:relative;
-  width:45%;
+  position:fixed;
+  top: 0;
+  right: 0;
+  width: 50%;
   height: 100%;
   overflow: auto;
   text-align:justify;
-  float:left;
-  margin-left:30px;
 }
 
 #toplevel-side ul {
@@ -98,42 +143,6 @@ margin
   border-bottom-width: 3px;
   border-bottom-style: solid;
   border-bottom-color: red;
-}
-
-canvas {
-  border: 1px dashed black;
-  float: left;
-  margin: 7px;
-}
-
-#output canvas {
-  background-color: #464646;
-  float: none;
-  display: block;
-  border: 1px dashed while;
-  margin: 7px;
-}
-
-#output img {
-  display:block;
-}
-
-#toplevel-examples {
-  width: 270px;
-  float: left;
-}
-
-#toplevel-examples .list-group-item{
-  padding: 5px 15px;
-}
-
-#btn-share {
-  float:right;
-  margin-top:-20px;
-  background-color:rgb(92, 129, 184);
-  border-color: rgb(70, 75, 128);
-  padding: 1px 5px;
-  display:none;
 }
 
 .clear { clear:both; }
@@ -157,11 +166,18 @@ canvas {
 /* * * * editor */
 
 #editor {
-  width: 99%;
   height: 80%;
   border: thin black solid;
-  margin-top: 5px;
-  margin-bottom: 5px;
+  flex: 1;
+}
+
+#editor-info {
+  flex: 0;
+  font-size: smaller;
+}
+
+#editor-info code {
+  font-size: smaller;
 }
 
 /* * * * draggable graphviz window */
@@ -196,7 +212,8 @@ div.dragdiv-content {
 
 div.dragdiv-close {
   padding: 0;
-  padding-right: 3px;
+  width: 1.5em;
+  text-align: center;
 }
 div.dragdiv-close:after {
   display: inline-block;
@@ -210,6 +227,8 @@ div.pan-control {
   text-align: center;
   right: 5px;
   font-family: sans-serif;
+  font-weight: bold;
+  vertical-align: middle;
   cursor: pointer;
   border-radius: 3px;
   color: white;

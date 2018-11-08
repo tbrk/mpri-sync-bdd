@@ -85,13 +85,19 @@ let get_selection e =
   let range = e.editor##getSelectionRange in
   Js.to_string @@ document##getTextRange(range)
 
+let mark_clean e = e.editor##getSession##getUndoManager##markClean
+
+let is_clean e =
+  Js.to_bool e.editor##getSession##getUndoManager##isClean
+
 let get_line e line =
   let document = e.editor##getSession##getDocument in
   Js.to_string @@ document##getLine (line)
 
-let create_editor editor_div =
+let create_editor ?(show_gutter=true) editor_div =
   let editor = edit editor_div in
   Js.Unsafe.set editor "$blockScrolling" (Js.Unsafe.variable "Infinity");
+  editor##.renderer##setShowGutter (Js.bool show_gutter);
   let data =
     { editor; editor_div; marks = []; keybinding_menu = false; } in
   editor##.customData := (data, None);

@@ -3,26 +3,37 @@
           "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>OCaml toplevel</title>
+    <title>MPRI Parallélisme synchrone: BDDs</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href="basic.css" type="text/css" />
   </head>
   <body>
     <div id="toplevel-container">
-      <pre id="output"></pre>
-      <div>
-        <div id="sharp" class="sharp"></div>
-        <textarea id="userinput">Loading ...</textarea>
+      <div id="toplevel-container-inner" class="container-inner">
+        <div id="toplevel-active">
+          <pre id="output"></pre>
+          <div>
+            <div id="sharp" class="sharp"></div>
+            <textarea id="userinput">Loading ...</textarea>
+          </div>
+        </div>
+        <div id="toplevel-inactive"
+             onclick="document.getElementById('userinput').focus();"></div>
       </div>
     </div>
     <div id="toplevel-side">
-      <div id="editor"></div>
-      In the editor: <code>Ctrl-Space</code> selects code and
-      <code>Ctrl-Enter</code> executes it.
-      In the terminal: <code>Shift-Enter</code> gives a newline,
-      <code>Ctrl-l</code> clears the display, and
-      <code>Ctrl-k</code> resets the toplevel.
-      Press <code>Ctrl-t</code> to switch between the terminal and editor.
+      <div id="toplevel-container-inner" class="container-inner">
+        <div id="editor"></div>
+        <div id="editor-info">
+          In the editor: <code>Ctrl-Space</code> selects code and
+          <code>Ctrl-Enter</code> executes it.
+          In the terminal: <code>Shift-Enter</code> gives a newline,
+          <code>Ctrl-l</code> clears the display, and
+          <code>Ctrl-k</code> resets the toplevel.
+          Press <code>Ctrl-t</code> to switch between the terminal and editor.
+          <a href="about.html" target="_blank">(About this page.)</a>
+        </div>
+      </div>
     </div>
 
     <!-- ace editor -->

@@ -282,7 +282,7 @@ let send_selection execute editor =
 
 let start_editor focus_terminal execute =
   let editor_div = by_id "editor" in
-  let editor = Ace.create_editor editor_div in
+  let editor = Ace.create_editor ~show_gutter:false editor_div in
   Ace.set_mode editor "ace/mode/ocaml";
   Ace.set_theme editor "ace/theme/eclipse";
   Ace.set_tab_size editor 2;
@@ -290,7 +290,6 @@ let start_editor focus_terminal execute =
   Ace.add_keybinding editor "select" "Ctrl-Space" select_paragraph;
   Ace.add_keybinding editor "send"   "Ctrl-Enter" (send_selection execute);
   Ace.add_keybinding editor "switch" "Ctrl-t"    focus_terminal;
-  Ace.focus editor;
   editor
 
 (* * * Startup *)
@@ -412,8 +411,13 @@ let run _ =
   setup_printers ();
   History.setup ();
 
-  Gv.gv "digraph { a -> b; a -> c }"; (* XXX *)
   exec' ("let gv ?engine = Gv.gv ?engine");
+
+  Html.window##.onbeforeunload := Html.handler
+      (fun ev ->
+         let dirty = not (Ace.is_clean editor) in
+         if dirty then Dom.preventDefault ev;
+         Js.bool dirty);
 
   textbox##.value := js ""
 

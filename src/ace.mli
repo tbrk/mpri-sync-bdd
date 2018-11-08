@@ -24,7 +24,9 @@ type loc = {
   loc_end: int * int;
 }
 
-val create_editor: Dom_html.divElement Js.t -> 'a editor
+val create_editor: ?show_gutter:bool
+                   -> Dom_html.divElement Js.t
+                   -> 'a editor
 
 val set_mode: 'a editor -> string -> unit
 val set_theme: 'a editor -> string -> unit
@@ -48,6 +50,9 @@ val set_cursor_position: 'a editor -> Ace_types.position Js.t -> unit
 val get_selection_range: 'a editor -> Ace_types.range Js.t
 val set_selection_range: 'a editor -> Ace_types.range Js.t -> unit
 val get_selection: 'a editor -> string
+
+val mark_clean: 'a editor -> unit
+val is_clean: 'a editor -> bool
 
 type mark_type = Error | Warning | Message
 

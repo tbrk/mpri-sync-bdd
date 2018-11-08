@@ -54,6 +54,19 @@ class type document = object
   method getLength : int Js.meth
 end
 
+class type renderer = object
+  method getShowGutter : bool Js.t Js.meth
+  method setShowGutter : bool Js.t -> unit Js.meth
+end
+
+class type undoManager = object
+  method hasRedo   : bool Js.t Js.meth
+  method hasUndo   : bool Js.t Js.meth
+  method isClean   : bool Js.t Js.meth
+  method reset     : unit Js.meth
+  method undo      : bool Js.t -> unit Js.meth
+  method markClean : unit Js.meth
+end
 
 class type editSession = object
   method getDocument : document Js.t Js.meth
@@ -72,6 +85,7 @@ class type editSession = object
     bool Js.t -> int Js.js_array Js.t Js.meth
   method removeMarker : int -> unit Js.meth
   method getState : 'a. int -> (< .. > as 'a) Js.t Js.meth
+  method getUndoManager : undoManager Js.t Js.meth
 end
 
 class type selection = object
@@ -103,6 +117,7 @@ class type ['a] editor = object
   method focus : unit Js.meth
   method setFontSize : int -> unit Js.meth
   method customData : 'a Js.prop
+  method renderer : renderer Js.t Js.prop
 end
 
 and ['a] command = object
