@@ -1,5 +1,8 @@
-(* Adapted from the
- * Js_of_ocaml toplevel
+(*
+ * Adaptations Copyright (C) 2018 Timothy Bourke
+ * Inria Paris / ENS
+ *
+ * Adapted from the Js_of_ocaml toplevel
  * distributed with ocsigen/js_of_ocaml/toplevel/examples/lwt_toplevel_lib
  *
  * http://www.ocsigen.org/js_of_ocaml/
@@ -19,6 +22,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
  *)
 
 open Js_of_ocaml
