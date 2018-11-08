@@ -1,12 +1,17 @@
 OCAMLC=ocamlfind ocamlc
 JSOO_MKTOP=jsoo_mktop
 
-toplevel.js: colorize.cmo ace.cmo ocp_indent.cmo promise.cmo \
-    	     graphviz.cmo dragdiv.cmo svgpanzoom.cmo gv.cmo toplevel.ml
+EXERCISES=bdd1.ml graphviz.ml
+
+TOPLEVEL_LIBS=colorize.cmo ace.cmo ocp_indent.cmo promise.cmo \
+    	      graphviz.cmo dragdiv.cmo svgpanzoom.cmo gv.cmo
+
+toplevel.js: $(TOPLEVEL_LIBS) toplevel.ml $(addprefix exercises/, $(EXERCISES))
 	$(JSOO_MKTOP) -safe-string -g \
 	    -jsopt "--disable shortvar --pretty" \
 	    -jsopt +toplevel.js \
 	    -jsopt +dynlink.js \
+	    -jsopt -I -jsopt ./ -jsopt --file -jsopt exercises \
 	    -export-package lwt \
 	    -export-package js_of_ocaml \
 	    -export-package js_of_ocaml-lwt \
@@ -17,7 +22,7 @@ toplevel.js: colorize.cmo ace.cmo ocp_indent.cmo promise.cmo \
 	    -package ocp-indent.lib \
 	    -package js_of_ocaml-ppx \
 	    -o $(@:.js=.byte) \
-	    $^
+	    $(TOPLEVEL_LIBS) toplevel.ml
 
 gv.cmo: gv.ml promise.cmi graphviz.cmi dragdiv.cmi svgpanzoom.cmi
 	$(OCAMLC) -package js_of_ocaml \

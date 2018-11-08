@@ -411,13 +411,20 @@ let run _ =
   setup_printers ();
   History.setup ();
 
+  (* Extra primitives *)
   exec' ("let gv ?engine = Gv.gv ?engine");
 
+  (* Warn if editor text may be lost *)
   Html.window##.onbeforeunload := Html.handler
       (fun ev ->
          let dirty = not (Ace.is_clean editor) in
          if dirty then Dom.preventDefault ev;
          Js.bool dirty);
+
+  (* Load exercise *)
+  Lwt.(async (fun () ->
+      return (Ace.set_contents editor
+                (Sys_js.read_file "/static/exercises/bdd1.ml"))));
 
   textbox##.value := js ""
 
