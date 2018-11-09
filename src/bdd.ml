@@ -54,6 +54,7 @@ module type BDD = sig
   val any_sat : t -> (variable * bool) list
   val random_sat : t -> (variable * bool) list
   val all_sat : t -> (variable * bool) list list
+  val print_var : Format.formatter -> variable -> unit
   val to_dot : t -> string
   val print_to_dot : t -> file:string -> unit
   val display : t -> unit
@@ -67,6 +68,8 @@ let make ?(print_var=fun ff -> Format.fprintf ff "x%d")
          ?(size=7001)
          max_var
   = (module struct
+
+let print_var = print_var
 
 let get_max_var () = max_var
 

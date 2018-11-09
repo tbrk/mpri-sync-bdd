@@ -120,6 +120,8 @@ module type BDD = sig
 
   (** Pretty printer *)
 
+  val print_var : Format.formatter -> variable -> unit
+
   val to_dot : t -> string
 
   val print_to_dot : t -> file:string -> unit
