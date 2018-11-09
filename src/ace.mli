@@ -49,6 +49,7 @@ val set_cursor_position: 'a editor -> Ace_types.position Js.t -> unit
 
 val get_selection_range: 'a editor -> Ace_types.range Js.t
 val set_selection_range: 'a editor -> Ace_types.range Js.t -> unit
+val select_all: 'a editor -> unit
 val get_selection: 'a editor -> string
 
 val mark_clean: 'a editor -> unit

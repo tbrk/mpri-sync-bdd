@@ -294,6 +294,7 @@ let start_editor focus_terminal execute =
   Ace.add_keybinding editor "select" "Ctrl-Space" select_paragraph;
   Ace.add_keybinding editor "send"   "Ctrl-Enter" (send_selection execute);
   Ace.add_keybinding editor "switch" "Ctrl-t"    focus_terminal;
+  Ace.add_keybinding editor "switch" "Ctrl-a"    Ace.select_all;
   editor
 
 (* * * Startup *)
@@ -416,7 +417,12 @@ let run _ =
   History.setup ();
 
   (* Extra primitives *)
-  exec' ("let gv ?engine = Gv.gv ?engine");
+  exec' ("let gv ?title ?engine = Gv.gv ?title ?engine");
+  exec' ("let get_editor () = (Js.Unsafe.eval_string \"ace.edit('editor')\"
+                                : 'a Ace_types.editor Js.t)");
+  exec' ("let load_editor file =
+            (Js.(Unsafe.(meth_call (get_editor ()) \"setValue\"
+               [| inject (string (Sys_js.read_file ~name:file)) |])) : unit)");
 
   (* Warn if editor text may be lost *)
   Html.window##.onbeforeunload := Html.handler

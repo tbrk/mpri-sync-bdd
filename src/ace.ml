@@ -80,6 +80,9 @@ let get_selection_range e =
 let set_selection_range e r =
   e.editor##getSelection##setSelectionRange r Js._false
 
+let select_all e =
+  e.editor##selectAll
+
 let get_selection e =
   let document = e.editor##getSession##getDocument in
   let range = e.editor##getSelectionRange in
