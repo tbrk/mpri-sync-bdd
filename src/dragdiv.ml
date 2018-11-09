@@ -36,7 +36,9 @@ let drag_done ev =
 let locinc = 20
 
 let locmin = 50
-let locmax = 200
+
+let locmax_x = 600
+let locmax_y = 300
 
 let lastloc = ref (locmin, locmin)
 
@@ -54,9 +56,12 @@ let new_window pos w =
     match pos with
     | None ->
         let x, y = !lastloc in
-        if x > locmax || y > locmax
-        then (lastloc := (locmin + locinc, locmin + locinc); locmin, locmin)
-        else (lastloc := (x + locinc, y + locinc); x, y)
+        let x, y = if y <= locmax_y then (x, y)
+                   else if x <= locmax_x then (x - locmax_y + 3 * locinc, locmin)
+                   else (locmin, locmin)
+        in
+        lastloc := (x + locinc, y + locinc);
+        x, y
     | Some p -> p
   in
   incr nwindows;
