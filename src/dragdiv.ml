@@ -55,7 +55,7 @@ let new_window pos w =
     | None ->
         let x, y = !lastloc in
         if x > locmax || y > locmax
-        then (lastloc := (locmin, locmin); locmin, locmin)
+        then (lastloc := (locmin + locinc, locmin + locinc); locmin, locmin)
         else (lastloc := (x + locinc, y + locinc); x, y)
     | Some p -> p
   in
