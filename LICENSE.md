@@ -9,6 +9,9 @@ found in this repository).
 * Graphviz: [CPL-1.0](https://graphviz.gitlab.io/license/)
 * viz.js: [MIT](https://github.com/mdaines/viz.js/blob/master/LICENSE)
 
+The exercises use
+* J.-C. Filliâtre's [BDD library](https://www.lri.fr/~filliatr/software.en.html)
+
 The original source code is released under a BSD2 license.
 
 Copyright 2018 Timothy Bourke (Inria)

@@ -14,6 +14,11 @@ This work builds on several key technologies:
 * [Graphviz](https://www.graphviz.org)
 * [viz.js](http://viz-js.com)
 
+The exercises build on the libraries:
+
+* [J.-C. Filliâtre](https://www.lri.fr/~filliatr/)'s
+  [BDD library](https://www.lri.fr/~filliatr/software.en.html).
+
 More details and the license information can be found in `about.html`.
 
 New directives
