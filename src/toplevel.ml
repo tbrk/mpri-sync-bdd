@@ -116,43 +116,6 @@ let setup_printers () =
   Topdirs.dir_install_printer Format.std_formatter
     (Longident.(Lident "_print_unit"))
 
-let setup_examples ~container ~textbox =
-  let r = Regexp.regexp "^\\(\\*+(.*)\\*+\\)$" in
-  let all = ref [] in
-  begin try
-    let ic = open_in "/static/examples.ml" in
-    while true do
-      let line = input_line ic in
-      match Regexp.string_match r line 0 with
-      | Some res ->
-         let name = match Regexp.matched_group res 1 with
-                    | Some s -> s
-                    | None -> assert false in
-         all := `Title name :: !all
-      | None -> all := `Content line :: !all
-    done;
-    assert false
-  with  _ -> () end;
-  let example_container = by_id "toplevel-examples" in
-  let _ = List.fold_left (fun acc tok ->
-      match tok with
-      | `Content line -> line ^ "\n" ^ acc
-      | `Title   name ->
-      let a = Tyxml_js.Html.(a ~a:[
-        a_class ["list-group-item"];
-        a_onclick (fun _ ->
-          textbox##.value := (js acc)##trim;
-            Lwt.async(fun () ->
-              resize ~container ~textbox ()  >>= fun () ->
-              textbox##focus;
-              Lwt.return_unit);
-            true
-         )] [pcdata name]) in
-      Dom.appendChild example_container (Tyxml_js.To_dom.of_a a);
-      ""
-    ) "" !all in
-  ()
-
 let rec iter_on_sharp ~f x =
   Js.Opt.iter (Html.CoerceTo.element x)
       (fun e -> if Js.to_bool (e##.classList##contains (js "sharp"))
@@ -297,6 +260,16 @@ let start_editor focus_terminal execute =
   Ace.add_keybinding editor "switch" "Ctrl-a"    Ace.select_all;
   editor
 
+(* * * Exercises *)
+
+let exercise_dir = "/static/exercises/"
+
+let exercises_list () =
+  Array.iter print_endline (Sys.readdir exercise_dir)
+
+let exercises_load editor s =
+  Ace.set_contents editor (Sys_js.read_file ~name:(exercise_dir ^ s))
+
 (* * * Startup *)
 
 let run _ =
@@ -410,7 +383,6 @@ let run _ =
       (fun s -> Js.to_string s ^ "\n") in
   Sys_js.set_channel_filler stdin readline;
 
-  (* setup_examples ~container ~textbox; *)
   setup_pseudo_fs ();
   setup_toplevel ();
   setup_printers ();
@@ -423,6 +395,11 @@ let run _ =
   exec' ("let load_editor file =
             (Js.(Unsafe.(meth_call (get_editor ()) \"setValue\"
                [| inject (string (Sys_js.read_file ~name:file)) |])) : unit)");
+
+  Toploop.(add_directive "exercises" (Directive_none exercises_list)
+              { section = "Exercises"; doc = "List the available exercises." });
+  Toploop.(add_directive "load_exercise" (Directive_string (exercises_load editor))
+              { section = "Exercises"; doc = "Load the named exercise." });
 
   (* Warn if editor text may be lost *)
   Html.window##.onbeforeunload := Html.handler
