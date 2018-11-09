@@ -4,7 +4,8 @@ JSOO_MKTOP=jsoo_mktop
 EXERCISES=bdd1.ml graphviz.ml
 
 TOPLEVEL_LIBS=colorize.cmo ace.cmo ocp_indent.cmo promise.cmo \
-    	      graphviz.cmo dragdiv.cmo svgpanzoom.cmo gv.cmo
+    	      graphviz.cmo dragdiv.cmo svgpanzoom.cmo gv.cmo \
+	      bdd.cmo
 
 toplevel.js: $(TOPLEVEL_LIBS) toplevel.ml $(addprefix exercises/, $(EXERCISES))
 	$(JSOO_MKTOP) -safe-string -g \
@@ -14,15 +15,23 @@ toplevel.js: $(TOPLEVEL_LIBS) toplevel.ml $(addprefix exercises/, $(EXERCISES))
 	    -jsopt -I -jsopt ./ -jsopt --file -jsopt exercises \
 	    -export-package lwt \
 	    -export-package js_of_ocaml \
-	    -export-package js_of_ocaml-lwt \
-	    -export-package js_of_ocaml-tyxml \
 	    -export-package js_of_ocaml-toplevel \
 	    -export-unit gv.cmi \
+	    -export-unit bdd.cmi \
+	    -export-unit ace_types.cmi \
 	    -package higlo \
 	    -package ocp-indent.lib \
+	    -package js_of_ocaml-lwt \
+	    -package js_of_ocaml-tyxml \
 	    -package js_of_ocaml-ppx \
 	    -o $(@:.js=.byte) \
 	    $(TOPLEVEL_LIBS) toplevel.ml
+
+bdd.cmo: bdd.ml bdd.cmi
+	$(OCAMLC) -c $<
+
+bdd.cmi: bdd.mli
+	$(OCAMLC) $<
 
 gv.cmo: gv.ml promise.cmi graphviz.cmi dragdiv.cmi svgpanzoom.cmi
 	$(OCAMLC) -package js_of_ocaml \
