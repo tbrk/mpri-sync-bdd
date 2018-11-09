@@ -256,8 +256,8 @@ let start_editor focus_terminal execute =
   Ace.add_keybinding editor "indent" "Tab"        do_indent;
   Ace.add_keybinding editor "select" "Ctrl-Space" select_paragraph;
   Ace.add_keybinding editor "send"   "Ctrl-Enter" (send_selection execute);
-  Ace.add_keybinding editor "switch" "Ctrl-t"    focus_terminal;
   Ace.add_keybinding editor "switch" "Ctrl-a"    Ace.select_all;
+  Ace.add_keybinding editor "switch" "Ctrl-,"    focus_terminal;
   editor
 
 (* * * Exercises *)
@@ -354,7 +354,7 @@ let run _ =
         | 75 when meta e -> setup_toplevel (); Js._false
         | 38 -> history_up e
         | 40 -> history_down e
-        | 84 when ctrl e -> Ace.focus editor; Js._false
+        | 188 when ctrl e -> Ace.focus editor; Js._false
         | _ -> Js._true
       );
   end;

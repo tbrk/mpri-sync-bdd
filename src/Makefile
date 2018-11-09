@@ -27,6 +27,23 @@ toplevel.js: $(TOPLEVEL_LIBS) toplevel.ml $(addprefix ../exercises/, $(EXERCISES
 	    -o $(@:.js=.byte) \
 	    $(TOPLEVEL_LIBS) toplevel.ml
 
+dist: basic.css \
+      index.html \
+      about.html \
+      toplevel.js \
+      exported-unit.cmis.js \
+      js_of_ocaml-toplevel.cmis.js \
+      js_of_ocaml.cmis.js \
+      lwt.cmis.js \
+      stdlib.cmis.js \
+      ace_bindings.js \
+      svg-pan-zoom.min.js \
+      full.render.js \
+      viz.js
+	mkdir -p ./dist/ace-min
+	cp $^ ./dist
+	cp -r ace-builds-1.4.1/src-min/* ./dist/ace-min
+
 bdd.cmo: bdd.ml bdd.cmi
 	$(OCAMLC) -c $<
 

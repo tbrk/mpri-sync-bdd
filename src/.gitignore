@@ -6,3 +6,4 @@ js_of_ocaml-tyxml.cmis.js
 js_of_ocaml.cmis.js
 lwt.cmis.js
 stdlib.cmis.js
+dist/
