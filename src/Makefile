@@ -7,12 +7,12 @@ TOPLEVEL_LIBS=colorize.cmo ace.cmo ocp_indent.cmo promise.cmo \
     	      graphviz.cmo dragdiv.cmo svgpanzoom.cmo gv.cmo \
 	      bdd.cmo
 
-toplevel.js: $(TOPLEVEL_LIBS) toplevel.ml $(addprefix exercises/, $(EXERCISES))
+toplevel.js: $(TOPLEVEL_LIBS) toplevel.ml $(addprefix ../exercises/, $(EXERCISES))
 	$(JSOO_MKTOP) -safe-string -g \
 	    -jsopt "--disable shortvar --pretty" \
 	    -jsopt +toplevel.js \
 	    -jsopt +dynlink.js \
-	    -jsopt -I -jsopt ./ -jsopt --file -jsopt exercises \
+	    -jsopt -I -jsopt ../ -jsopt --file -jsopt exercises \
 	    -export-package lwt \
 	    -export-package js_of_ocaml \
 	    -export-package js_of_ocaml-toplevel \

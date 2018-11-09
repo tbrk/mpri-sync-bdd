@@ -47,27 +47,14 @@ module Enrich (B : BDD) : ENRICHED_BDD
     let (==>) = mk_imp
     let (==)  = apply (=)
     let ite x y z = (x && y) || (not x && z)
-    (* let gv ?title b = gv ?title (to_dot b) (* online version *) *)
+    let gv ?title b = gv ?title (to_dot b) (* online version *)
     (* let gv ?title b = display b (* offline version *) *)
-    let gv ?title b = (* offline mac version *)
-       let file = Filename.temp_file "bdd" ".dot" in
-       let ofile = Filename.temp_file "bdd" ".ps" in
-       print_to_dot b ~file;
-       begin try
-         ignore (Sys.command (Printf.sprintf "dot -Tps %s > %s" file ofile));
-         ignore (Sys.command (Printf.sprintf "open %s" ofile))
-       with _ -> ()
-       end;
-       try
-         Sys.remove file;
-         Sys.remove ofile
-       with _ -> ()
     let forall x t = failwith "not implemented"
     let foralls xs t = failwith "not implemented"
     let exists x t = failwith "not implemented"
     let existss xs t = failwith "not implemented"
     let subst t (x, t') = failwith "not implemented"
-    let substs = failwith "not implemented"
+    let substs xs = failwith "not implemented"
 end
 
 (* * Useful functions *)
@@ -101,6 +88,8 @@ let show_sats print_var =
     (pp_print_list ~pp_sep:(fun ff () -> pp_print_string ff "\n") show_sat)
 
 (* Raymond §7.4: Basic BDDs *)
+
+(* See the definitions at https://github.com/tbrk/jcf-bdd/blob/master/bdd.ml *)
 
 module B = Enrich (val Bdd.make 6)
 
@@ -223,19 +212,21 @@ let _ = C.gv ~title:"e1 ↓ b" e5
 
 (* Raymond §8: Forward Symbolic Exploration *)
 
-(* Q4. Implement a simple counter model with four states:
+(* Q3. Implement a simple counter model with four states:
 
         ↓
         c0 → c1 → c2 → c3
         ↑               |
         +---------------+
+
+   (Hint:
  *)
 (* TODO *)
 
 (* Raymond §8.1: General scheme *)
 
 module FORWARD1 (B : ENRICHED_BDD) = struct
-  (** Q3. Implement the scheme described in Figure 15.
+  (** Q4. Implement the scheme described in Figure 15.
           (The Figure is missing something...) *)
   let is_reachable
     ?(show=false)
@@ -246,13 +237,13 @@ module FORWARD1 (B : ENRICHED_BDD) = struct
     failwith "not implemented" (* TODO *)
 end
 
-(* Q4. Confirm that state c3 is reachable using your answer to Q3. *)
+(* Q5. Confirm that state c3 is reachable using your answers to Q3 and Q4. *)
 (* TODO *)
 
 
 (* Raymond §8.2: Detailed implementation *)
 module FORWARD2 (B : ENRICHED_BDD) = struct
-  (** Q5. Implement the optimization proposed in Figure 17.
+  (** Q6. Implement the optimization proposed in Figure 17.
           (The Figure contains two errors...) *)
   let is_reachable
     ?(show=false)
@@ -263,11 +254,11 @@ module FORWARD2 (B : ENRICHED_BDD) = struct
     failwith "not implemented" (* TODO *)
 end
 
-(* Q6. Apply the scheme above to test reachability of the simple counter. *)
+(* Q7. Apply the scheme above to test reachability of the simple counter. *)
 (* TODO *)
 
-(* Going further: implement the optimized iamge computation described
-   in Raymdon §8.4. *)
+(* Going further: implement the optimized image computation described
+   in Raymond §8.4. *)
 
 (* Transforming (Boolean) Lustre programs into transition systems. *)
 
