@@ -28,7 +28,7 @@ module type ENRICHED_BDD
     val (==>)   : t -> t -> t
     val (==)    : t -> t -> t
     val ite     : t -> t -> t -> t
-    val gv      : ?title:string -> t -> unit
+    val show    : ?title:string -> t -> unit
     val forall  : variable -> t -> t
     val foralls : variable list -> t -> t
     val exists  : variable -> t -> t
@@ -47,8 +47,8 @@ module Enrich (B : BDD) : ENRICHED_BDD
     let (==>) = mk_imp
     let (==)  = apply (=)
     let ite x y z = (x && y) || (not x && z)
-    let gv ?title b = gv ?title (to_dot b) (* online version *)
-    (* let gv ?title b = display b (* offline version *) *)
+    let show ?title b = gv ?title (to_dot b) (* online version *)
+    (* let show ?title b = display b (* offline version *) *)
     let forall x t = failwith "not implemented"
     let foralls xs t = failwith "not implemented"
     let exists x t = failwith "not implemented"
@@ -97,30 +97,30 @@ let (x1 : B.t) = B.mk_var (1 : variable) (* BDDs from variables *)
 let x2 = B.x 2 (* abbreviation: x = mk_var *)
 let x3 = B.x 3
 
-let _ = B.(gv x1)   (* Show the BDD for "x1" *)
+let _ = B.(show x1)   (* Show the BDD for "x1" *)
 
-let _ = B.(gv ~title:"true"  one)
-let _ = B.(gv ~title:"false" zero)
+let _ = B.(show ~title:"true"  one)
+let _ = B.(show ~title:"false" zero)
 
 let b1 = B.((x1 && x2) >< x3)
 
-let _ = B.gv ~title:"b1" b1
+let _ = B.show ~title:"b1" b1
 let _ = show_sats B.print_var (B.all_sat b1)
 
-let _ = B.(gv ~title:"not b1" (not b1))
+let _ = B.(show ~title:"not b1" (not b1))
 
 module C = (val named_variables ["a"; "b"; "c"])
 let (a, b, c) = C.(mk_var 1, mk_var 2, mk_var 3)
 
 let b2 = C.(a && (b ==> c))
 
-let _ = C.gv ~title:"a ∧ (b ⇒ C)" b2
+let _ = C.show ~title:"a ∧ (b ⇒ C)" b2
 
 (* Raymond §7.6.3: Cofactors *)
 
-let _ = C.(gv ~title:"restrict b2 'b true" (restrict b2 (var b) true))
+let _ = C.(show ~title:"restrict b2 'b true" (restrict b2 (var b) true))
 
-let _ = C.(gv ~title:"restrict b2 'b false" (restrict b2 (var b) false))
+let _ = C.(show ~title:"restrict b2 'b false" (restrict b2 (var b) false))
 
 (* Raymond §7.3.1: Shannon decomposition *)
 let ok = C.(tautology (b2 ==
@@ -151,19 +151,19 @@ let ok = C.(tautology (b2 ==
 (* TODO *)
 
 let b3 = B.(forall 2 b1)
-let _ = B.gv ~title:"∀x2, b1" b3
+let _ = B.show ~title:"∀x2, b1" b3
 
 let b4 = B.(foralls [1; 2; 3] b1)
-let _ = B.gv ~title:"∀x1, x2, x3, b1" b4
+let _ = B.show ~title:"∀x1, x2, x3, b1" b4
 
 let b5 = B.(exists 2 b1)
-let _ = B.gv ~title:"∃x2, b1" b5
+let _ = B.show ~title:"∃x2, b1" b5
 
 let b6 = B.(existss [1; 2; 3] b1)
-let _ = B.gv ~title:"∃x1, x2, x3, b1" b6
+let _ = B.show ~title:"∃x1, x2, x3, b1" b6
 
 let b7 = B.(subst b1 (3, x 4 && x 5))
-let _ = B.gv b7
+let _ = B.show b7
 
 let _ = show_sat B.print_var (B.any_sat b1)
 let ok = B.(tautology (substs b1 [(var x3, one); (var x1, zero)]))
@@ -178,7 +178,7 @@ let e1 = VO1.(List.fold_left mk_and one [
     v2 >< v5;
     v3 >< v6
   ])
-let _ = VO1.gv ~title:"order: v1 < v2 < v3 < v4 < v5 < v6" e1
+let _ = VO1.show ~title:"order: v1 < v2 < v3 < v4 < v5 < v6" e1
 
 module VO2 = (val named_variables ["v1"; "v4"; "v2"; "v5"; "v3"; "v6"])
 let (v1, v4, v2, v5, v3, v6) = VO2.(x 1, x 2, x 3, x 4, x 5, x 6)
@@ -188,7 +188,7 @@ let e2 = VO2.(List.fold_left mk_and one [
     v2 >< v5;
     v3 >< v6
   ])
-let _ = VO2.gv ~title:"order: v1 < v4 < v2 < v5 < v3 < v6" e2
+let _ = VO2.show ~title:"order: v1 < v4 < v2 < v5 < v3 < v6" e2
 
 (* Raymond §7.9.2: Generalized cofactor *)
 
@@ -198,9 +198,9 @@ let e2 = C.(a || c)
 
 let e = C.(constrain e1 e2)
 
-let _ = C.gv ~title:"b ∧ c" e1
-let _ = C.gv ~title:"a ∨ c" e2
-let _ = C.gv ~title:"e1 ↓↓ e2" e
+let _ = C.show ~title:"b ∧ c" e1
+let _ = C.show ~title:"a ∨ c" e2
+let _ = C.show ~title:"e1 ↓↓ e2" e
 
 let e3 = C.(constrain e1 b)
 let e4 = C.(constrain e1 (not b))
@@ -208,7 +208,7 @@ let e4 = C.(constrain e1 (not b))
 (* Raymond §7.9.3: Restriction *)
 
 let e5 = C.(restriction e1 b)
-let _ = C.gv ~title:"e1 ↓ b" e5
+let _ = C.show ~title:"e1 ↓ b" e5
 
 (* Raymond §8: Forward Symbolic Exploration *)
 
