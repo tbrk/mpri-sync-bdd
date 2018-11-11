@@ -364,9 +364,10 @@ let constrain b1 b2 =
   let cache = H2.create cache_default_size in
   let rec app ((u1,u2) as u12) =
     match u1.node, u2.node with
-    | Zero, Zero -> zero
     | _, Zero -> failwith "constrain 0 is undefined"
     | _, One  -> u1
+    | Zero, _ -> u1
+    | One, _  -> u1
     | _ ->
       try
         H2.find cache u12
@@ -393,9 +394,10 @@ let restriction b1 b2 =
   let cache = H2.create cache_default_size in
   let rec app ((u1,u2) as u12) =
     match u1.node, u2.node with
-    | Zero, Zero -> zero
     | _, Zero -> failwith "constrain 0 is undefined"
     | _, One  -> u1
+    | Zero, _ -> u1
+    | One, _  -> u1
     | _ ->
       try
         H2.find cache u12
