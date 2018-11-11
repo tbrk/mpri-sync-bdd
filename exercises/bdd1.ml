@@ -219,7 +219,8 @@ let _ = C.show ~title:"e1 ↓ b" e5
         ↑               |
         +---------------+
 
-   (Hint:
+   (Hint: consider the definitions required for Q4 to calculate
+          forward reachability.)
  *)
 (* TODO *)
 
