@@ -3,10 +3,10 @@
 
    Based on P. Raymond's paper on
    “Synchronous program verification with Lustre/Lesar”
-   (https://www.di.ens.fr/~pouzet/cours/mpri/cours8/lesar-rapport.pdf)
+   (https://www.di.ens.fr/~pouzet/cours/mpri/bib/lesar-rapport.pdf)
 
    And J.C. Filliâtre's BDD library
-   (https://github.com/tbrk/jcf-bdd)
+   (https://github.com/backtracking/ocaml-bdd)
 
    See also: H. Reif Anderson's
    “An Introduction to Binary Decision Diagrams”
@@ -227,8 +227,7 @@ let _ = C.show ~title:"e1 ↓ b" e5
 (* Raymond §8.1: General scheme *)
 
 module FORWARD1 (B : ENRICHED_BDD) = struct
-  (** Q4. Implement the scheme described in Figure 15.
-          (The Figure is missing something...) *)
+  (** Q4. Implement the scheme described in Figure 15. *)
   let is_reachable
     ?(show=false)
     (s_init : B.t)
@@ -244,8 +243,7 @@ end
 
 (* Raymond §8.2: Detailed implementation *)
 module FORWARD2 (B : ENRICHED_BDD) = struct
-  (** Q6. Implement the optimization proposed in Figure 17.
-          (The Figure contains two errors...) *)
+  (** Q6. Implement the optimization proposed in Figure 17. *)
   let is_reachable
     ?(show=false)
     (s_init : B.t)
