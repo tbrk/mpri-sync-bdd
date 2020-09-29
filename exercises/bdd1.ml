@@ -89,7 +89,8 @@ let show_sats print_var =
 
 (* Raymond §7.4: Basic BDDs *)
 
-(* See the definitions at https://github.com/tbrk/jcf-bdd/blob/master/bdd.ml *)
+(* See the definitions at
+   https://github.com/backtracking/ocaml-bdd/blob/master/lib/bdd.ml *)
 
 module B = Enrich (val Bdd.make 6)
 
@@ -118,13 +119,16 @@ let _ = C.show ~title:"a ∧ (b ⇒ C)" b2
 
 (* Raymond §7.6.3: Cofactors *)
 
-let _ = C.(show ~title:"restrict b2 'b true" (restrict b2 (var b) true))
+let _ = C.(show ~title:"restrict b2 'b true"
+                (restrict b2 (var b) true))
 
-let _ = C.(show ~title:"restrict b2 'b false" (restrict b2 (var b) false))
+let _ = C.(show ~title:"restrict b2 'b false"
+                (restrict b2 (var b) false))
 
 (* Raymond §7.3.1: Shannon decomposition *)
 let ok = C.(tautology (b2 ==
-  (b && (restrict b2 (var b) true) || (b && (restrict b2 (var b) false))))
+     (b && (restrict b2 (var b) true)
+  || (b && (restrict b2 (var b) false))))
 )
 
 (** Q1. Fix the formula above. *)
