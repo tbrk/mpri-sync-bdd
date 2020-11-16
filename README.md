@@ -1,8 +1,8 @@
-OCaml Toplevel with BDDs for MPRI Parallélisme synchrone
-========================================================
+OCaml Toplevel with BDDs for MPRI/M1 Parallélisme synchrone
+===========================================================
 
 An interactive top-level for following the BDD exercises of the MPRI course 
-on Synchronous Parallelism.
+on Synchronous Parallelism and the ENS M1 course on synchronous programming.
 
 This work builds on several key technologies:
 
@@ -38,7 +38,7 @@ opam install ocamlfind \
              js_of_ocaml-ppx \
              js_of_ocaml-tyxml \
              js_of_ocaml-toplevel \
-             js_of_ocaml-lwt \
+             js_of_ocaml-lwt
 ```
 
 Building

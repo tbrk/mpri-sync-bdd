@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *)
 
 open Ace_types
+open Js_of_ocaml
 
 let iter_option f = function
   | None -> ()

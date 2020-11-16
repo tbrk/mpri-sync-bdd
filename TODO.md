@@ -1,5 +1,6 @@
 TODO
 ====
+* Use an installed version of the bdd library.
 * Save button to download editor contents.
 * Share buttom to send/receive editor contents (using gists?)
 * Resizable partition between terminal and editor

@@ -70,7 +70,7 @@ colorize.cmo: colorize.ml colorize.cmi
 
 svgpanzoom.byte: svgpanzoom.cmo svgpanzoom.cmi
 	$(OCAMLC) -package js_of_ocaml \
-		  -package js_of_ocaml.ppx \
+		  -package js_of_ocaml-ppx \
 		  -linkpkg $< -o $@
 
 svgpanzoom.cmi: svgpanzoom.mli
@@ -78,7 +78,7 @@ svgpanzoom.cmi: svgpanzoom.mli
 
 svgpanzoom.cmo: svgpanzoom.ml svgpanzoom.cmi
 	$(OCAMLC) -package js_of_ocaml \
-		  -package js_of_ocaml.ppx \
+		  -package js_of_ocaml-ppx \
 		  -linkpkg \
 		  -c -o $@ $<
 
@@ -101,7 +101,7 @@ dragdiv.cmi: dragdiv.mli
 
 dragdiv.cmo: dragdiv.ml dragdiv.cmi
 	$(OCAMLC) -package js_of_ocaml \
-		  -package js_of_ocaml.ppx \
+		  -package js_of_ocaml-ppx \
 		  -linkpkg \
 		  -c -o $@ $<
 

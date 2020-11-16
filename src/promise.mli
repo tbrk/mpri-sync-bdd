@@ -1,6 +1,8 @@
 (* Taken from Ke Wang's (https://github.com/aik9508)
    pull request (https://github.com/ocsigen/js_of_ocaml/pull/609) *)
 
+open Js_of_ocaml
+
 type 'a promise
 
 val _Promise : 'a

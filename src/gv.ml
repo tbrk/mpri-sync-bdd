@@ -1,4 +1,6 @@
 
+open Js_of_ocaml
+
 module Html = Dom_html
 let js = Js.string
 let document = Html.window##.document

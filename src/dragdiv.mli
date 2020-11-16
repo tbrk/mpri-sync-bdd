@@ -1,4 +1,6 @@
 
+open Js_of_ocaml
+
 type t
 
 val create :    ?min_width:int

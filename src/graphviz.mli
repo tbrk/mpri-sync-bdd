@@ -10,6 +10,8 @@
 (*                                                                     *)
 (***********************************************************************)
 
+open Js_of_ocaml
+
 (**
    Low-level interface to the {{:https://github.com/mdaines/viz.js}{vis.js}}
    Javascript library.

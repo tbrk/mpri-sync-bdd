@@ -389,6 +389,7 @@ let run _ =
   History.setup ();
 
   (* Extra primitives *)
+  exec' ("open Js_of_ocaml");
   exec' ("let gv ?title ?engine = Gv.gv ?title ?engine");
   exec' ("let get_editor () = (Js.Unsafe.eval_string \"ace.edit('editor')\"
                                 : 'a Ace_types.editor Js.t)");

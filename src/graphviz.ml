@@ -1,3 +1,5 @@
+open Js_of_ocaml
+
 class type image = object
   method path   : Js.js_string Js.t Js.prop
   method width  : Js.js_string Js.t Js.optdef_prop

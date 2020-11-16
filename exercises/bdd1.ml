@@ -1,8 +1,10 @@
-(* Cours MPRI Parallélisme synchrone
+(* Cours INFO-M1-REAC:
+   Modèles et langages pour la programmation des systèmes réactifs
+
    Basic exercises on model checking with BDDs.
 
-   Based on P. Raymond's paper on
-   “Synchronous program verification with Lustre/Lesar”
+   Based on P. Raymond's article on
+   “Synchronous program verification with Lustre/Lesar” (Nov. 2018 revision)
    (https://www.di.ens.fr/~pouzet/cours/mpri/bib/lesar-rapport.pdf)
 
    And J.C. Filliâtre's BDD library
@@ -13,7 +15,9 @@
    (http://www.cs.utexas.edu/~isil/cs389L/bdd.pdf)
 *)
 
-(* #load "bdd.cmo";; (* not needed for web interface *) *)
+(*
+#require "bdd.cmo";; (* not needed for web interface *)
+*)
 
 open Bdd
 
@@ -101,6 +105,7 @@ let x3 = B.x 3
 let _ = B.(show x1)   (* Show the BDD for "x1" *)
 
 let _ = B.(show ~title:"true"  one)
+
 let _ = B.(show ~title:"false" zero)
 
 let b1 = B.((x1 && x2) >< x3)
@@ -119,16 +124,13 @@ let _ = C.show ~title:"a ∧ (b ⇒ C)" b2
 
 (* Raymond §7.6.3: Cofactors *)
 
-let _ = C.(show ~title:"restrict b2 'b true"
-                (restrict b2 (var b) true))
+let _ = C.(show ~title:"restrict b2 'b true" (restrict b2 (var b) true))
 
-let _ = C.(show ~title:"restrict b2 'b false"
-                (restrict b2 (var b) false))
+let _ = C.(show ~title:"restrict b2 'b false" (restrict b2 (var b) false))
 
 (* Raymond §7.3.1: Shannon decomposition *)
 let ok = C.(tautology (b2 ==
-     (b && (restrict b2 (var b) true)
-  || (b && (restrict b2 (var b) false))))
+  (b && (restrict b2 (var b) true) || (b && (restrict b2 (var b) false))))
 )
 
 (** Q1. Fix the formula above. *)
@@ -146,8 +148,14 @@ let ok = C.(tautology (b2 ==
     * exists [x1; ...; xn] b
       returns ∃x1 ... xn, b
 
+    * forall (x : variable) (b : t)
+      returns ∀x, b
+
+    * forall [x1; ...; xn] b
+      returns ∀x1 ... xn, b
+
     * subst (b : t) ((x, bx) : variable * t)
-      returns b[bx/x] (in b, substitute bx for x)
+      returns b[bx/x] (in b, substitute bx for x, i.e., replace x with bx)
 
     * subst b [(x1, b1); ...; (xn, bn)]
       returns ((b[b1/x1])...)[bn/xn]
@@ -223,15 +231,40 @@ let _ = C.show ~title:"e1 ↓ b" e5
         ↑               |
         +---------------+
 
-   (Hint: consider the definitions required for Q4 to calculate
-          forward reachability.)
+       We will test that c3 is reachable by considering it to be
+       an error state.
  *)
-(* TODO *)
+
+module CTR4 = (val named_variables ["c0" ; "c1" ; "c2" ; "c3" ;
+                                    "c0'"; "c1'"; "c2'"; "c3'"])
+let (c0, c1, c2, c3, c0', c1', c2', c3')
+  = CTR4.(x 1, x 2, x 3, x 4, x 5, x 6, x 7, x 8)
+
+let c_init  = (* TODO *)
+let c_err   = c3
+let c_trans = (* TODO *)
+let c_post_h s = (* TODO *)
+let state_subst = CTR4.([ (var c0', c0);
+                          (var c1', c1);
+                          (var c2', c2);
+                          (var c3', c3) ])
+
+(* Q4. Manually calculate the reachable states s_n after n transitions. *)
+
+let s0 = c_init
+let s1 = (* TODO *)
+let s2 = (* TODO *)
+let s3 = (* TODO *)
+
+let _ = CTR4.(show_sats print_var (all_sat s0))
 
 (* Raymond §8.1: General scheme *)
 
 module FORWARD1 (B : ENRICHED_BDD) = struct
-  (** Q4. Implement the scheme described in Figure 15. *)
+  (** Q5. Implement the Forward Symbolic Model Checking scheme
+          (Raymond, Figure 15). When [show] is true, you should
+          show the satisfying assignements for the current reachability
+          set using [show_sats print_var (all_sat s)]. *)
   let is_reachable
     ?(show=false)
     (s_init : B.t)
@@ -241,13 +274,12 @@ module FORWARD1 (B : ENRICHED_BDD) = struct
     failwith "not implemented" (* TODO *)
 end
 
-(* Q5. Confirm that state c3 is reachable using your answers to Q3 and Q4. *)
+(* Q5. Confirm that state c3 is reachable using your answers to Q3 and Q5. *)
 (* TODO *)
 
-
-(* Raymond §8.2: Detailed implementation *)
+(** Q6. Adapt your solution to Q5 to include the optimization presented
+        in the course (Raymond, Figure 15). *)
 module FORWARD2 (B : ENRICHED_BDD) = struct
-  (** Q6. Implement the optimization proposed in Figure 17. *)
   let is_reachable
     ?(show=false)
     (s_init : B.t)
@@ -259,6 +291,47 @@ end
 
 (* Q7. Apply the scheme above to test reachability of the simple counter. *)
 (* TODO *)
+
+(* Q8 (bonus). Write a function to generate a counter with n states and
+               check reachability of the (n-1)th state.
+
+     ↓
+     0 -> 1 -> 2 -> ... -> n - 1
+     ↑                      |
+     +----------------------+
+ *)
+
+module type SYSTEM = sig
+  include ENRICHED_BDD
+  val init : t
+  val trans : t
+  val post_h : t -> t
+  val state_subst : (variable * t) list
+  val err : t
+end
+
+let simple_counter n =
+  let print_var ff x =
+    Format.fprintf ff "c%d%s" ((x - 1) mod n) (if (x - 1) < n then "" else "'")
+  in
+  let module CTR = (Enrich (val (Bdd.make ~print_var (2*n)))) in
+  let c i = CTR.mk_var (i + 1) in
+  let c' i = CTR.mk_var (n + i + 1) in
+  (module struct
+    include CTR
+    let init = true        (* TODO *)
+    let trans = true       (* TODO *)
+    let post_h s = true    (* TODO *)
+    let state_subst = [] (* TODO *)
+    let err = c (n - 1)
+   end : SYSTEM)
+
+module CTR10 = (val (simple_counter 10))
+module FORWARD1_CTR10 = FORWARD1 (CTR10)
+
+let reachable =
+  let open CTR10 in
+  FORWARD1_CTR10.is_reachable ~show:true init post_h state_subst err
 
 (* Going further: implement the optimized image computation described
    in Raymond §8.4. *)

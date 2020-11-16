@@ -1,3 +1,4 @@
+open Js_of_ocaml
 
 class type point = object
   method x : float Js.prop
